@@ -1,0 +1,63 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: "CloudFormation template to add a listener and target group to an existing NLB"
+
+Parameters:
+  VpcId:
+    Type: AWS::EC2::VPC::Id
+    Description: "VPC ID"
+
+  ListenerPort:
+    Type: Number
+    Description: "Port number for the NLB listener (e.g., 30000)"
+
+  TargetGroupName:
+    Type: String
+    Description: "Name of the Target Group"
+
+  TargetInstanceId:
+    Type: String
+    Description: "ID of the target EC2 instance"
+
+  TargetGroupPort:
+    Type: Number
+    Default: 22
+    Description: "Port number for the Target Group (e.g., 22)"
+
+Resources:
+  # NLB 리스너
+  NLBListener:
+    Type: AWS::ElasticLoadBalancingV2::Listener
+    Properties:
+      DefaultActions:
+        - Type: forward
+          TargetGroupArn: !Ref NLBTargetGroup
+      LoadBalancerArn: !ImportValue "OHPARK-ADMIN-NLB-Arn"
+      Port: !Ref ListenerPort
+      Protocol: TCP
+
+  # NLB 타겟 그룹
+  NLBTargetGroup:
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    Properties:
+      Name: !Sub "${TargetGroupName}-${ListenerPort}"
+      VpcId: !Ref VpcId
+      Port: !Ref TargetGroupPort
+      Protocol: TCP
+      TargetType: instance
+      HealthCheckProtocol: TCP
+      HealthCheckPort: !Ref TargetGroupPort
+      HealthCheckIntervalSeconds: 30
+      HealthCheckTimeoutSeconds: 5
+      HealthyThresholdCount: 3
+      UnhealthyThresholdCount: 3
+      Targets:
+        - Id: !Ref TargetInstanceId
+
+Outputs:
+  ListenerArn:
+    Description: "ARN of the NLB Listener"
+    Value: !Ref NLBListener
+
+  TargetGroupArn:
+    Description: "ARN of the NLB Target Group"
+    Value: !Ref NLBTargetGroup

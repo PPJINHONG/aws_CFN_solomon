@@ -1,0 +1,30 @@
+[
+  {
+    "ParameterKey": "VpcId",
+    "ParameterValue": "vpc-0ebb4e84d8de76e98"
+  },
+  {
+    "ParameterKey": "SubnetName",
+    "ParameterValue": "OHPARK-ADMIN-private-subnet"
+  },
+  {
+    "ParameterKey": "InstanceName",
+    "ParameterValue": "OHPARK-DEPLOY"
+  },
+  {
+    "ParameterKey": "KeyName",
+    "ParameterValue": "ohpark-keypair"
+  },
+  {
+    "ParameterKey": "InstanceType",
+    "ParameterValue": "t3.medium"
+  },
+  {
+    "ParameterKey": "AMIId",
+    "ParameterValue": "ami-0599333449c3045e3"
+  },
+  {
+    "ParameterKey": "ec2securitygroupname",
+    "ParameterValue": "OHPARK-ADMIN-PRIVATE-DEPLOY-SG"
+  }
+]

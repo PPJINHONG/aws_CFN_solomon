@@ -1,0 +1,22 @@
+[
+  {
+    "ParameterKey": "VpcId",
+    "ParameterValue": "vpc-0ebb4e84d8de76e98"
+  },
+  {
+    "ParameterKey": "ListenerPort",
+    "ParameterValue": "30000"
+  },
+  {
+    "ParameterKey": "TargetGroupName",
+    "ParameterValue": "OHPARK-ADMIN-NLB-deploy"
+  },
+  {
+    "ParameterKey": "TargetInstanceId",
+    "ParameterValue": "i-0445e0c81ccaa65f2"
+  },
+  {
+    "ParameterKey": "TargetGroupPort",
+    "ParameterValue": "22"
+  }
+]

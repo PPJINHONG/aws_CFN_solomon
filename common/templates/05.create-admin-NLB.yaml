@@ -1,0 +1,50 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: "CloudFormation template to create a Network Load Balancer only"
+
+Parameters:
+  VpcId:
+    Type: AWS::EC2::VPC::Id
+    Description: "VPC ID"
+
+  SubnetId:
+    Type: AWS::EC2::Subnet::Id
+    Description: "Subnet ID for NLB"
+
+  NLBName:
+    Type: String
+    Default: "ohpark-nlb-allbastion"
+    Description: "Name of the Network Load Balancer"
+
+Resources:
+  # NLB 생성
+  NLB:
+    Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+    Properties:
+      Name: !Ref NLBName
+      Scheme: internet-facing
+      Type: network
+      Subnets:
+        - !Ref SubnetId
+      IpAddressType: ipv4
+      LoadBalancerAttributes:
+        - Key: load_balancing.cross_zone.enabled
+          Value: "true"
+
+Outputs:
+  NLBName:
+    Description: "The name of the Network Load Balancer"
+    Value: !Ref NLB
+    Export:
+      Name: !Sub "${NLBName}-Name"
+
+  NLBDNSName:
+    Description: "DNS name of the Network Load Balancer"
+    Value: !GetAtt NLB.DNSName
+    Export:
+      Name: !Sub "${NLBName}-DNSName"
+
+  NLBArn:
+    Description: "ARN of the Network Load Balancer"
+    Value: !GetAtt NLB.LoadBalancerArn
+    Export:
+      Name: !Sub "${NLBName}-Arn"

@@ -1,0 +1,151 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: "CloudFormation template to create Public or Private Subnet, with optional Bastion EC2 if Public"
+
+Parameters:
+  # -- 서브넷 파라미터 -- #
+  VpcId:
+    Type: AWS::EC2::VPC::Id
+    Description: "VPC ID"
+
+  SubnetCidrBlock:
+    Type: String
+    Description: "Subnet CIDR block (e.g., 10.0.1.0/24)."
+
+  AvailabilityZone:
+    Type: AWS::EC2::AvailabilityZone::Name
+    Description: "Availability Zone (e.g., ap-northeast-2a)."
+
+  SubnetName:
+    Type: String
+    Description: "Subnet Name"
+
+  InternetGatewayId:
+    Type: String
+    Default: igw-09ac2f0c28fccdc1f
+    Description: "Use existing InternetGateway ID"
+
+
+  PublicRouteTableName:
+    Type: String
+    Description: "Route Table Name (only used if SubnetType=Public)"
+
+  SubnetType:
+    Type: String
+    AllowedValues: ["Public", "Private"]
+    Description: "Specify whether the subnet is Public or Private."
+
+  # -- Bastion EC2 파라미터 -- #
+  BastionAmiId:
+    Type: AWS::EC2::Image::Id
+    Default: ami-062cddb9d94dcf95d
+    Description: "AMI ID for the Bastion EC2 instance"
+
+  BastionInstanceType:
+    Type: String
+    Default: t2.micro
+    Description: "EC2 Instance Type for Bastion Host"
+
+  KeyName:
+    Type: AWS::EC2::KeyPair::KeyName
+    Default: ohpark-keypair
+    Description: "KeyPair name for SSH access to Bastion"
+
+  ec2securitygroupname:
+    Type: String
+    Description: "Security Group name for Bastion"
+
+  ec2name:
+    Type: String
+    Description: "EC2 instance name for Bastion"
+
+Conditions:
+  IsPublic: !Equals [!Ref SubnetType, "Public"]
+
+Resources:
+  # 서브넷 생성
+  CustomSubnet:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref VpcId
+      CidrBlock: !Ref SubnetCidrBlock
+      AvailabilityZone: !Ref AvailabilityZone
+      MapPublicIpOnLaunch: 
+        Fn::If:
+          - IsPublic
+          - true
+          - false
+      Tags:
+        - Key: Name
+          Value: !Ref SubnetName
+        - Key: Type
+          Value: !Ref SubnetType
+
+  # 보안 그룹
+  BastionSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Condition: IsPublic
+    Properties:
+      GroupDescription: "Allow SSH from anywhere to Bastion"
+      VpcId: !Ref VpcId
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0
+      Tags:
+        - Key: Name
+          Value: !Ref ec2securitygroupname
+
+  # Bastion EC2 생성
+  BastionHost:
+    Type: AWS::EC2::Instance
+    Condition: IsPublic
+    Properties:
+      InstanceType: !Ref BastionInstanceType
+      ImageId: !Ref BastionAmiId
+      KeyName: !Ref KeyName
+      NetworkInterfaces:
+        - AssociatePublicIpAddress: true
+          DeviceIndex: 0
+          SubnetId: !Ref CustomSubnet
+          GroupSet:
+            - !Ref BastionSecurityGroup
+      Tags:
+        - Key: Name
+          Value: !Ref ec2name
+
+  # 라우트 테이블
+  PublicRouteTable:
+    Type: AWS::EC2::RouteTable
+    Condition: IsPublic
+    Properties:
+      VpcId: !Ref VpcId
+      Tags:
+        - Key: Name
+          Value: !Ref PublicRouteTableName
+
+  PublicDefaultRoute:
+    Type: AWS::EC2::Route
+    Condition: IsPublic
+    #DependsOn: AttachGateway
+    Properties:
+      RouteTableId: !Ref PublicRouteTable
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId: !Ref InternetGatewayId
+
+  SubnetRouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Condition: IsPublic
+    Properties:
+      SubnetId: !Ref CustomSubnet
+      RouteTableId: !Ref PublicRouteTable
+
+Outputs:
+  SubnetId:
+    Description: "The ID of the created subnet"
+    Value: !Ref CustomSubnet
+
+  BastionPublicIP:
+    Condition: IsPublic
+    Description: "Public IP of Bastion EC2"
+    Value: !GetAtt BastionHost.PublicIp

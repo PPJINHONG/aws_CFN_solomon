@@ -1,0 +1,14 @@
+[
+  {
+    "ParameterKey": "VpcId",
+    "ParameterValue": "vpc-0ebb4e84d8de76e98"
+  },
+  {
+    "ParameterKey": "SubnetId",
+    "ParameterValue": "subnet-0bda0df35648fb208"
+  },
+  {
+    "ParameterKey": "NLBName",
+    "ParameterValue": "OHPARK-ADMIN-NLB"
+  }
+]

@@ -1,0 +1,74 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: "CloudFormation template to create a Private Subnet with existing NAT Gateway"
+
+Parameters:
+  # -- 서브넷 파라미터 -- #
+  VpcId:
+    Type: AWS::EC2::VPC::Id
+    Description: "VPC ID"
+
+  SubnetCidrBlock:
+    Type: String
+    Description: "Private Subnet CIDR block (e.g., 10.0.0.0/25)."
+
+  AvailabilityZone:
+    Type: AWS::EC2::AvailabilityZone::Name
+    Description: "Availability Zone (e.g., ap-northeast-2a)."
+
+  SubnetName:
+    Type: String
+    Description: "Private Subnet Name"
+
+  NatGatewayId:
+    Type: String
+    Description: "Existing NAT Gateway ID"
+
+  PrivateRouteTableName:
+    Type: String
+    Description: "Route Table Name for Private Subnet"
+
+Resources:
+  # 프라이빗 서브넷 생성
+  PrivateSubnet:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref VpcId
+      CidrBlock: !Ref SubnetCidrBlock
+      AvailabilityZone: !Ref AvailabilityZone
+      MapPublicIpOnLaunch: false
+      Tags:
+        - Key: Name
+          Value: !Ref SubnetName
+        - Key: Type
+          Value: "Private"
+
+  # 프라이빗 라우트 테이블 생성
+  PrivateRouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref VpcId
+      Tags:
+        - Key: Name
+          Value: !Ref PrivateRouteTableName
+
+  # NAT Gateway로 0.0.0.0/0 경로 추가
+  PrivateDefaultRoute:
+    Type: AWS::EC2::Route
+    Properties:
+      RouteTableId: !Ref PrivateRouteTable
+      DestinationCidrBlock: 0.0.0.0/0
+      NatGatewayId: !ImportValue OHPARK-ADMIN-NAT-GW-ID
+
+  # 서브넷과 라우트 테이블 연결
+  SubnetRouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref PrivateSubnet
+      RouteTableId: !Ref PrivateRouteTable
+
+Outputs:
+  PrivateSubnetId:
+    Description: "The ID of the created private subnet"
+    Value: !Ref PrivateSubnet
+    Export:
+      Name: !Sub "${SubnetName}-ID"

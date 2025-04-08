@@ -1,0 +1,13 @@
+aws cloudformation describe-stack-events \
+  --stack-name ohpark-B-public-ec2-subnet \
+  --query "StackEvents[?ResourceStatus=='CREATE_FAILED'].[LogicalResourceId, ResourceStatusReason]" \
+  --output table
+
+
+
+watch -n 3 "aws cloudformation describe-stack-events --stack-name ohpark-B-public-ec2-subnet --output table"
+
+
+aws cloudformation describe-stack-events \
+  --stack-name ohpark-B-public-ec2-subnet \
+  --output table
