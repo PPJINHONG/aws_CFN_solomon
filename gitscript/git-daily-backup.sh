@@ -1,29 +1,35 @@
 #!/bin/bash
 
 export PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
+
 # 1. 작업 디렉토리 이동
 cd /home/chef/deployment || exit 1
 
-# 2. 로컬 브랜치 확인 (항상 master로 시작)
-git checkout master
+# 2. 항상 master에서 시작
+/usr/bin/git checkout master
 
-# 3. 최신 변경사항 백업 브랜치 생성
+# 3. 새 백업 브랜치 생성
 DATE=$(date +%F)
-BRANCH="abackup-$DATE"
-git checkout -b $BRANCH
+BRANCH="testbackup-$DATE"
+/usr/bin/git checkout -b $BRANCH
 
-# 4. 변경사항 커밋 및 백업 브랜치 푸시
-git add .
-git commit -m "Daily backup on $DATE" || echo "[INFO] 커밋할 변경사항 없음"
-git push origin $BRANCH
+# 4. 커밋 및 백업 브랜치 푸시
+/usr/bin/git add .
+/usr/bin/git commit -m "Daily backup on $DATE" || echo "[INFO] 커밋할 변경사항 없음"
+/usr/bin/git push origin $BRANCH
 
-# 5. master로 돌아와서 백업 브랜치 병합
-git checkout master
-git merge --no-ff $BRANCH -m "Merge backup branch $BRANCH into master"
+# 5. master로 돌아와서 병합 시도
+/usr/bin/git checkout master
 
-# 6. 최종적으로 GitHub의 master도 최신으로 맞춤
-git push origin master
+# 6. 병합 (충돌 방지 옵션 포함)
+/usr/bin/git merge --no-edit --no-ff $BRANCH
 
-# 7. 완료 로그
-echo "[✔] Backup $BRANCH created, merged to master, and pushed at $(date)"
+# 7. master 브랜치 GitHub 푸시
+/usr/bin/git push origin master
+
+# 8. 다시 master 상태 유지
+/usr/bin/git checkout master
+
+# 9. 완료 로그
+echo "[✔] Backup $BRANCH merged into master and pushed at $(date)"
 
