@@ -1,0 +1,22 @@
+[
+  {
+    "ParameterKey": "VpcId",
+    "ParameterValue": "vpc-0ebb4e84d8de76e98"
+  },
+  {
+    "ParameterKey": "SubnetCidrBlock",
+    "ParameterValue": "10.0.2.0/24"
+  },
+  {
+    "ParameterKey": "AvailabilityZone",
+    "ParameterValue": "ap-northeast-2a"
+  },
+  {
+    "ParameterKey": "SubnetName",
+    "ParameterValue": "OHPARK-A-private-subnet"
+  },
+  {
+    "ParameterKey": "PrivateRouteTableName",
+    "ParameterValue": "OHPARK-A-PRIVATE-RTB"
+  }
+]

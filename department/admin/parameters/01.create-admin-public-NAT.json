@@ -1,0 +1,34 @@
+[
+  {
+    "ParameterKey": "VpcId",
+    "ParameterValue": "vpc-0ebb4e84d8de76e98"
+  },
+  {
+    "ParameterKey": "SubnetCidrBlock",
+    "ParameterValue": "10.0.0.0/25"
+  },
+  {
+    "ParameterKey": "AvailabilityZone",
+    "ParameterValue": "ap-northeast-2a"
+  },
+  {
+    "ParameterKey": "SubnetName",
+    "ParameterValue": "OHPARK-ADMIN-public-subnet"
+  },
+  {
+    "ParameterKey": "InternetGatewayId",
+    "ParameterValue": "igw-09ac2f0c28fccdc1f"
+  },
+  {
+    "ParameterKey": "PublicRouteTableName",
+    "ParameterValue": "OHPARK-ADMIN-PUBLIC-RTB"
+  },
+  {
+      "ParameterKey": "NatElasticIpName",
+      "ParameterValue": "OHPARK-ADMIN-NAT-EIP1"
+  },
+  {
+      "ParameterKey": "NatGatewayName",
+      "ParameterValue": "OHPARK-ADMIN-NAT-GW"
+    }
+]

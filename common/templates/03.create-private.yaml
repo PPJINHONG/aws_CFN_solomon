@@ -19,9 +19,9 @@ Parameters:
     Type: String
     Description: "Private Subnet Name"
 
-  NatGatewayId:
-    Type: String
-    Description: "Existing NAT Gateway ID"
+  # NatGatewayId:
+  #   Type: String
+  #   Description: "Existing NAT Gateway ID"
 
   PrivateRouteTableName:
     Type: String

@@ -5,7 +5,7 @@
     },
     {
       "ParameterKey": "SubnetCidrBlock",
-      "ParameterValue": "10.0.0.0/25"
+      "ParameterValue": "10.0.1.0/24"
     },
     {
       "ParameterKey": "AvailabilityZone",
@@ -13,7 +13,7 @@
     },
     {
       "ParameterKey": "SubnetName",
-      "ParameterValue": "OHPARK-ADMIN-public-subnet"
+      "ParameterValue": "OHPARK-A-public-subnet"
     },
     {
       "ParameterKey": "InternetGatewayId",
@@ -21,15 +21,7 @@
     },
     {
       "ParameterKey": "PublicRouteTableName",
-      "ParameterValue": "OHPARK-ADMIN-PUBLIC-RTB"
-    },
-    {
-        "ParameterKey": "NatElasticIpName",
-        "ParameterValue": "OHPARK-ADMIN-NAT-EIP1"
-    },
-    {
-        "ParameterKey": "NatGatewayName",
-        "ParameterValue": "OHPARK-ADMIN-NAT-GW"
-      }
+      "ParameterValue": "OHPARK-A-PUBLIC-RTB"
+    }
   ]
   
