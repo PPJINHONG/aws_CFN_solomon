@@ -1,0 +1,77 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: "CloudFormation template to create a Public Subnet with NAT Gateway"
+
+Parameters:
+  # -- 서브넷 파라미터 -- #
+  VpcId:
+    Type: AWS::EC2::VPC::Id
+    Description: "VPC ID"
+
+  SubnetCidrBlock:
+    Type: String
+    Description: "Subnet CIDR block (e.g., 10.0.1.0/24)."
+
+  AvailabilityZone:
+    Type: AWS::EC2::AvailabilityZone::Name
+    Description: "Availability Zone (e.g., ap-northeast-2a)."
+
+  SubnetName:
+    Type: String
+    Description: "Subnet Name"
+
+  InternetGatewayId:
+    Type: String
+    Description: "Use existing InternetGateway ID"
+
+  PublicRouteTableName:
+    Type: String
+    Description: "Route Table Name"
+
+
+Resources:
+  # 퍼블릭 서브넷 생성
+  PublicSubnet:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref VpcId
+      CidrBlock: !Ref SubnetCidrBlock
+      AvailabilityZone: !Ref AvailabilityZone
+      MapPublicIpOnLaunch: true
+      Tags:
+        - Key: Name
+          Value: !Ref SubnetName
+        - Key: Type
+          Value: "Public"
+
+  # 라우트 테이블 생성
+  PublicRouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref VpcId
+      Tags:
+        - Key: Name
+          Value: !Ref PublicRouteTableName
+
+  # 인터넷 게이트웨이를 통한 기본 경로 추가
+  PublicDefaultRoute:
+    Type: AWS::EC2::Route
+    Properties:
+      RouteTableId: !Ref PublicRouteTable
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId: !Ref InternetGatewayId
+
+  # 서브넷과 라우트 테이블 연결
+  SubnetRouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref PublicSubnet
+      RouteTableId: !Ref PublicRouteTable
+
+Outputs:
+  SubnetId:
+    Description: "The ID of the created public subnet"
+    Value: !Ref PublicSubnet
+    Export:
+      Name: !Sub "${SubnetName}-ID"
+
+  

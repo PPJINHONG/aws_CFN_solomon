@@ -1,0 +1,82 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: "CloudFormation template to create an EC2 instance in a Private Subnet"
+
+Parameters:
+  VpcId:
+    Type: AWS::EC2::VPC::Id
+    Description: "VPC ID"
+
+  SubnetName:
+    Type: String
+    Description: "Private Subnet Name"
+
+  InstanceName:
+    Type: String
+    Description: "EC2 Instance Name"
+
+  KeyName:
+    Type: AWS::EC2::KeyPair::KeyName
+    Default: ohpark-keypair
+    Description: "KeyPair name for SSH access to the instance"
+
+  InstanceType:
+    Type: String
+    Default: t3.medium
+    Description: "EC2 Instance Type"
+
+  AMIId:
+    Type: AWS::EC2::Image::Id
+    Default: ami-0599333449c3045e3
+    Description: "AMI ID for the EC2 instance"
+
+  ec2securitygroupname:
+    Type: String
+    Description: "Security Group name for the EC2 instance"
+
+Conditions:
+  IsPublic: !Equals [!Ref SubnetName, "Public"]
+
+Resources:
+  # 보안 그룹 생성
+  PrivateInstanceSG:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: "Allow SSH from anywhere to Bastion"
+      VpcId: !Ref VpcId
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0
+      SecurityGroupEgress:
+        - IpProtocol: -1
+          FromPort: -1
+          ToPort: -1
+          CidrIp: 0.0.0.0/0
+      Tags:
+        - Key: Name
+          Value: !Ref ec2securitygroupname
+
+  # EC2 인스턴스 생성
+  PrivateInstance:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType: !Ref InstanceType
+      ImageId: !Ref AMIId
+      KeyName: !Ref KeyName
+      NetworkInterfaces:
+        - AssociatePublicIpAddress: false
+          DeviceIndex: 0
+          SubnetId: !ImportValue OHPARK-ADMIN-private-subnet-ID
+          GroupSet:
+            - !Ref PrivateInstanceSG
+      Tags:
+        - Key: Name
+          Value: !Ref InstanceName
+
+Outputs:
+  InstanceId:
+    Description: "The ID of the created EC2 instance"
+    Value: !Ref PrivateInstance
+    Export:
+      Name: !Sub "${InstanceName}-ID"
