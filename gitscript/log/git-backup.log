@@ -568,3 +568,23 @@ error: Your local changes to the following files would be overwritten by checkou
 Please commit your changes or stash them before you switch branches.
 Aborting
 fatal: a branch named 'backup-2025-04-11' already exists
+[backup-2025-04-11 9f0c9b2] Daily backup on 2025-04-11
+ 1 file changed, 20 insertions(+)
+To github.com:PPJINHONG/aws_CFN_solomon.git
+   2d78ef3..9f0c9b2  backup-2025-04-11 -> backup-2025-04-11
+error: Your local changes to the following files would be overwritten by checkout:
+	gitscript/log/git-backup.log
+Please commit your changes or stash them before you switch branches.
+Aborting
+Already up to date.
+Everything up-to-date
+error: Your local changes to the following files would be overwritten by checkout:
+	gitscript/log/git-backup.log
+Please commit your changes or stash them before you switch branches.
+Aborting
+[✔] Backup backup-2025-04-11 merged into master and pushed at Fri Apr 11 04:26:06 UTC 2025
+error: Your local changes to the following files would be overwritten by checkout:
+	gitscript/log/git-backup.log
+Please commit your changes or stash them before you switch branches.
+Aborting
+fatal: a branch named 'backup-2025-04-11' already exists
