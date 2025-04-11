@@ -10,7 +10,7 @@ cd /home/chef/deployment || exit 1
 
 # 3. 새 백업 브랜치 생성
 DATE=$(date +%F)
-BRANCH="testbackup-$DATE"
+BRANCH="backup-$DATE"
 /usr/bin/git checkout -b $BRANCH
 
 # 4. 커밋 및 백업 브랜치 푸시

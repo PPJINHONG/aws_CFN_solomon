@@ -1,0 +1,47 @@
+[
+    {
+      "ParameterKey": "InstanceName",
+      "ParameterValue": "OHPARK-A-WEB"
+    },
+    {
+      "ParameterKey": "VpcId",
+      "ParameterValue": "vpc-0ebb4e84d8de76e98"
+    },
+    {
+      "ParameterKey": "KeyName",
+      "ParameterValue": "ohpark-keypair"
+    },
+    {
+      "ParameterKey": "InstanceType",
+      "ParameterValue": "t2.micro"
+    },
+    {
+      "ParameterKey": "AMIId",
+      "ParameterValue": "ami-054d2312cac5d28a0"
+    },
+    {
+      "ParameterKey": "SubnetExportName",
+      "ParameterValue": "subnet-09c9441b148f84d8d"
+    },
+    {
+      "ParameterKey": "AssignPublicIp",
+      "ParameterValue": "false"
+    },
+    {
+      "ParameterKey": "RootVolumeSize",
+      "ParameterValue": "30"
+    },
+    {
+      "ParameterKey": "AttachExtraVolume",
+      "ParameterValue": "false"
+    },
+    {
+      "ParameterKey": "ExtraVolumeSize",
+      "ParameterValue": "20"
+    },
+    {
+      "ParameterKey": "SecurityGroupName",
+      "ParameterValue": "OHPARK-A-WEB-SG"
+    }
+  ]
+  
